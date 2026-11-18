@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PathSnap – Evaluator UI</title>
+<!-- STEP 9 - UI (Laptop 2). Talks to the API on Laptop 1; never receives the reference route. -->
+<!-- Works fully offline: no map tiles or external scripts. Runs on Laptop 2. -->
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; margin: 20px; color: #222; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .row { margin: 10px 0; }
+  input { width: 260px; padding: 4px; }
+  button { padding: 5px 10px; margin: 2px; cursor: pointer; }
+  button.sel { background: #222; color: #fff; }
+  #wrap { display: flex; gap: 20px; align-items: flex-start; }
+  canvas { border: 1px solid #999; }
+  table { border-collapse: collapse; }
+  td, th { border: 1px solid #bbb; padding: 4px 10px; text-align: left; }
+  .legend span { display: inline-block; width: 14px; height: 4px; margin: 0 4px 3px 12px; vertical-align: middle; }
+  #status { color: #555; }
+</style>
+</head>
+<body>
+<h1>PathSnap – Map-Matching Evaluator</h1>
+<div>Select a trip. The API on Laptop 1 runs the full pipeline (candidates → classifier → HMM/Viterbi) and returns the route and scores.</div>
+
+<div class="row">API address (Laptop 1):
+  <input id="api" value="http://localhost:8000">
+  <button onclick="loadTrips()">Load trips</button>
+  <span id="status"></span>
+</div>
+<div class="row" id="trips"></div>
+
+<div id="wrap">
+  <div>
+    <canvas id="map" width="760" height="560"></canvas>
+    <div class="legend">
+      <span style="background:#1f77b4;height:8px;width:8px;border-radius:4px"></span>Raw GPS points
+      <span style="background:#d62728"></span>Predicted route (HMM)
+      <span style="background:#2ca02c;height:10px;width:10px"></span>Start
+      <span style="background:#000;height:10px;width:10px"></span>End
+    </div>
+  </div>
+  <div>
+    <h3 id="title">No trip selected</h3>
+    <table id="metrics"></table>
+  </div>
+</div>
+
+<script>
+const api = () => document.getElementById('api').value.replace(/\/$/, '');
+const status = (s) => document.getElementById('status').textContent = s;
+
+async function loadTrips() {
+  status('loading…');
+  try {
+    const r = await fetch(api() + '/trips'); const d = await r.json();
+    const box = document.getElementById('trips'); box.innerHTML = '<b>Trips (' + d.partition + '):</b> ';
+    d.trips.forEach(t => { const b = document.createElement('button'); b.textContent = t; b.onclick = () => predict(t, b); box.appendChild(b); });
+    status('');
+  } catch (e) { status('Cannot reach API: ' + e); }
+}
+
+async function predict(tid, btn) {
+  document.querySelectorAll('#trips button').forEach(b => b.classList.remove('sel')); btn.classList.add('sel');
+  status('running pipeline for ' + tid + '…');
+  const t0 = performance.now();
+  try {
+    const r = await fetch(api() + '/predict', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({trip_id: tid})});
+    if (!r.ok) throw new Error(await r.text());
+    const d = await r.json(); draw(d); table(d, (performance.now() - t0) / 1000); status('');
+  } catch (e) { status('Error: ' + e); }
+}
+
+function draw(d) {
+  const c = document.getElementById('map'), g = c.getContext('2d');
+  g.clearRect(0, 0, c.width, c.height);
+  const pts = d.gps.concat(d.predicted_route.flat());
+  let la0 = Math.min(...pts.map(p => p[0])), la1 = Math.max(...pts.map(p => p[0]));
+  let lo0 = Math.min(...pts.map(p => p[1])), lo1 = Math.max(...pts.map(p => p[1]));
+  const k = Math.cos((la0 + la1) / 2 * Math.PI / 180);           // keep metric aspect ratio
+  const w = (lo1 - lo0) * k || 1e-6, h = (la1 - la0) || 1e-6, pad = 20;
+  const s = Math.min((c.width - 2 * pad) / w, (c.height - 2 * pad) / h);
+  const X = lon => pad + (lon - lo0) * k * s, Y = lat => c.height - pad - (lat - la0) * s;
+  g.fillStyle = 'rgba(31,119,180,0.45)';
+  d.gps.forEach(p => { g.beginPath(); g.arc(X(p[1]), Y(p[0]), 1.6, 0, 7); g.fill(); });
+  g.strokeStyle = '#d62728'; g.lineWidth = 2;
+  d.predicted_route.forEach(seg => { g.beginPath(); g.moveTo(X(seg[0][1]), Y(seg[0][0])); g.lineTo(X(seg[1][1]), Y(seg[1][0])); g.stroke(); });
+  const a = d.gps[0], b = d.gps[d.gps.length - 1];
+  g.fillStyle = '#2ca02c'; g.fillRect(X(a[1]) - 5, Y(a[0]) - 5, 10, 10);
+  g.fillStyle = '#000'; g.fillRect(X(b[1]) - 5, Y(b[0]) - 5, 10, 10);
+}
+
+function table(d, rt) {
+  const m = d.metrics, pct = v => (v == null || Number.isNaN(v)) ? 'n/a' : (100 * v).toFixed(2) + ' %';
+  document.getElementById('title').textContent = 'Trip ' + d.trip_id;
+  document.getElementById('metrics').innerHTML = `
+    <tr><th>Metric</th><th>Classifier only</th><th>Classifier + HMM</th></tr>
+    <tr><td>Top-1 accuracy (per GPS point)</td><td>${pct(m.clf_top1_accuracy)}</td><td>${pct(m.hmm_top1_accuracy)}</td></tr>
+    <tr><td>Route continuity</td><td>${pct(m.clf_route_continuity)}</td><td>${pct(m.hmm_route_continuity)}</td></tr>
+    <tr><td>Route F1 (length-weighted, sequence level)</td><td>${pct(m.clf_route_f1)}</td><td>${pct(m.hmm_route_f1)}</td></tr>
+    <tr><td>GPS points (valid / total)</td><td colspan="2">${m.n_valid_points ?? 'n/a'} / ${m.n_points}${m.reference_available === false ? ' (no reference route on server)' : ''}</td></tr>
+    <tr><td>Predicted route segments</td><td colspan="2">${d.predicted_route.length}</td></tr>
+    <tr><td>Server time (s)</td><td colspan="2">${d.timing_s.total.toFixed(2)}</td></tr>
+    <tr><td>Round trip (s)</td><td colspan="2">${rt.toFixed(2)}</td></tr>`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+=== 18-11-2026 14:56:33.66 start === 
+=== 18-11-2026 14:56:33.67 01_EDA === 
+[NbConvertApp] Converting notebook notebooks\01_EDA.ipynb to notebook
+C:\Users\amanp\AppData\Local\Programs\Python\Python314\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 108160158 bytes to notebooks\01_EDA.ipynb
+=== 18-11-2026 14:56:33.67 02_Preprocessing_and_Feature_Engineering === 
+[NbConvertApp] Converting notebook notebooks\02_Preprocessing_and_Feature_Engineering.ipynb to notebook
+C:\Users\amanp\AppData\Local\Programs\Python\Python314\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 1321539 bytes to notebooks\02_Preprocessing_and_Feature_Engineering.ipynb
+=== 18-11-2026 14:56:33.67 03_Model_Training_and_Comparison === 
+[NbConvertApp] Converting notebook notebooks\03_Model_Training_and_Comparison.ipynb to notebook
+C:\Users\amanp\AppData\Local\Programs\Python\Python314\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 480318 bytes to notebooks\03_Model_Training_and_Comparison.ipynb
+=== 18-11-2026 14:56:33.67 04_Bayesian_Optimisation === 
+[NbConvertApp] Converting notebook notebooks\04_Bayesian_Optimisation.ipynb to notebook
+C:\Users\amanp\AppData\Local\Programs\Python\Python314\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 124611 bytes to notebooks\04_Bayesian_Optimisation.ipynb
+=== 18-11-2026 14:56:33.67 05_HMM_Viterbi === 
+[NbConvertApp] Converting notebook notebooks\05_HMM_Viterbi.ipynb to notebook
+C:\Users\amanp\AppData\Local\Programs\Python\Python314\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+[NbConvertApp] Writing 34774889 bytes to notebooks\05_HMM_Viterbi.ipynb
+=== 18-11-2026 15:21:47.07 DONE === 

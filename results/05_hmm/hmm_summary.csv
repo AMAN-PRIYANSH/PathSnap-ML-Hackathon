@@ -1,0 +1,4 @@
+,classifier_only,classifier_plus_hmm
+Top-1 accuracy (point-weighted),0.871276864110499,0.8974842388190015
+Route continuity (point-weighted),0.9354565335487868,0.9779613764441009
+"Route F1, length-weighted (mean over trips) - sequence level",0.933280465721983,0.9642756510982304

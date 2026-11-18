@@ -1,0 +1,5 @@
+data/
+results/02_preprocessing/features/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

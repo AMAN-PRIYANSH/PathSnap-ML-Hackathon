@@ -1,0 +1,8 @@
+Model,Algorithm family,Key configuration,CV Macro F1-score,Top-1 accuracy (student-test),Route continuity,Student-test Macro F1-score,Log loss,"Inference time (s, all student-test rows)"
+RandomForest,Ensemble (bagging),"100 trees, depth 16, min_leaf=20",0.9249,0.8739,0.9309,0.9232,0.0907,0.172
+HistGradientBoosting,Boosting,"300 iters, lr 0.1, 31 leaves",0.925,0.8721,0.93,0.9226,0.0942,0.123
+DecisionTree,Tree-based,"max_depth=12, min_leaf=50",0.9212,0.8711,0.9302,0.9197,0.1055,0.012
+MLP_64_32,Neural network,"2 hidden layers (64,32), ReLU, Adam, early stop, 80k rows",0.9155,0.8669,0.9334,0.9161,0.1019,0.058
+LogisticRegression,Linear / probabilistic,"C=1.0, L2, scaled",0.9004,0.8611,0.9227,0.9036,0.1363,0.021
+KNN_k25,Instance-based,"k=25, distance-weighted, scaled, 80k rows",0.9088,0.861,0.9258,0.913,0.1382,23.989
+GaussianNB,Probabilistic,default var_smoothing,0.7818,0.8355,0.9078,0.7756,0.7548,0.07
